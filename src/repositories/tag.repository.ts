@@ -3,26 +3,26 @@ import { TagRepositorySearchResponseRootObject } from '../responses';
 
 export class TagRepository extends Repository {
   public async search(q: string) {
-    const { body } = await this.client.request.send<TagRepositorySearchResponseRootObject>({
+    const { data } = await this.client.request.send<TagRepositorySearchResponseRootObject>({
       url: '/api/v1/tags/search/',
-      qs: {
+      params: {
         timezone_offset: this.client.state.timezoneOffset,
         q,
         count: 30,
       },
     });
-    return body;
+    return data;
   }
 
   public async section(q: string, tab: string) {
-    const { body } = await this.client.request.send<TagRepositorySearchResponseRootObject>({
+    const { data } = await this.client.request.send<TagRepositorySearchResponseRootObject>({
       url: `/api/v1/tags/${encodeURI(q)}/sections/`,
-      qs: {
+      params: {
         timezone_offset: this.client.state.timezoneOffset,
         tab: tab,
         count: 30,
       },
     });
-    return body;
+    return data;
   }
 }

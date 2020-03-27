@@ -16,16 +16,16 @@ export class MediaCommentsFeed extends Feed<MediaCommentsFeedResponse, MediaComm
   }
 
   async request() {
-    const { body } = await this.client.request.send<MediaCommentsFeedResponse>({
+    const { data } = await this.client.request.send<MediaCommentsFeedResponse>({
       url: `/api/v1/media/${this.id}/comments/`,
-      qs: {
+      params: {
         can_support_threading: true,
         max_id: this.nextMaxId,
         min_id: this.nextMinId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

@@ -17,15 +17,15 @@ export class MediaStickerResponsesFeed<T, I> extends Feed<T, I> {
   }
 
   async request(): Promise<T> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/media/${this.mediaId}/${this.stickerId}/${this.name}/`,
       method: 'GET',
-      qs: {
+      params: {
         max_id: this.maxId || void 0,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: T) {

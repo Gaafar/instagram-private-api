@@ -13,14 +13,14 @@ export class UserFeed extends Feed<UserFeedResponse, UserFeedResponseItemsItem> 
   }
 
   async request() {
-    const { body } = await this.client.request.send<UserFeedResponse>({
+    const { data } = await this.client.request.send<UserFeedResponse>({
       url: `/api/v1/feed/user/${this.id}/`,
-      qs: {
+      params: {
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

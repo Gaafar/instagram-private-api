@@ -12,14 +12,14 @@ export class NewsFeed extends Feed<NewsFeedResponseRootObject, NewsFeedResponseS
   }
 
   async request() {
-    const { body } = await this.client.request.send<NewsFeedResponseRootObject>({
+    const { data } = await this.client.request.send<NewsFeedResponseRootObject>({
       url: `/api/v1/news`,
-      qs: {
+      params: {
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

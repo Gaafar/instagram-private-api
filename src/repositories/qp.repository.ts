@@ -4,14 +4,14 @@ export class QpRepository extends Repository {
   public async getCooldowns() {
     return this.client.request.send({
       url: '/api/v1/qp/get_cooldowns/',
-      qs: this.client.request.sign({}),
+      params: this.client.request.sign({}),
     });
   }
   public async batchFetch() {
     return this.client.request.send({
       url: '/api/v1/qp/batch_fetch/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         surfaces_to_triggers: this.surfacesToTriggers,
         surfaces_to_queries: this.surfacesToQueries,
         vc_policy: 'default',

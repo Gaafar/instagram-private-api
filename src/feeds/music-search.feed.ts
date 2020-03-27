@@ -20,10 +20,10 @@ export class MusicSearchFeed extends Feed<MusicSearchFeedResponseRootObject, Mus
   }
 
   async request(): Promise<MusicSearchFeedResponseRootObject> {
-    const { body } = await this.client.request.send<MusicSearchFeedResponseRootObject>({
+    const { data } = await this.client.request.send<MusicSearchFeedResponseRootObject>({
       url: '/api/v1/music/search/',
       method: 'POST',
-      form: {
+      data: {
         cursor: this.nextCursor || '0',
         _csrftoken: this.client.state.cookieCsrfToken,
         product: this.product,
@@ -33,8 +33,8 @@ export class MusicSearchFeed extends Feed<MusicSearchFeedResponseRootObject, Mus
         q: this.query,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: any) {

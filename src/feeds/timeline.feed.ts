@@ -48,7 +48,7 @@ export class TimelineFeed extends Feed<TimelineFeedResponse, TimelineFeedRespons
         is_pull_to_refresh: this.reason === 'pull_to_refresh' ? '1' : '0',
       });
     }
-    const { body } = await this.client.request.send<TimelineFeedResponse>({
+    const { data } = await this.client.request.send<TimelineFeedResponse>({
       url: `/api/v1/feed/timeline/`,
       method: 'POST',
       headers: {
@@ -57,10 +57,10 @@ export class TimelineFeed extends Feed<TimelineFeedResponse, TimelineFeedRespons
         'X-DEVICE-ID': this.client.state.uuid,
         'X-FB': 1,
       },
-      form,
+      data: form,
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

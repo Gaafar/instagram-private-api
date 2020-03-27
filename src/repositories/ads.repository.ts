@@ -3,16 +3,16 @@ import { GraphQLRequestOptions } from '../types';
 
 export class AdsRepository extends Repository {
   public async graphQL<T extends { data: any }>(options: GraphQLRequestOptions): Promise<T> {
-    const { body } = await this.client.request.send<T>(
+    const { data } = await this.client.request.send<T>(
       {
         url: '/api/v1/ads/graphql/',
         method: 'POST',
-        qs: {
+        params: {
           locale: this.client.state.language,
           vc_policy: 'insights_policy',
           ...(options.surface.name ? { surface: options.surface.name } : {}),
         },
-        form: {
+        data: {
           access_token: options.accessToken,
           fb_api_caller_class: 'RelayModern',
           fb_api_req_friendly_name: options.surface.friendlyName,
@@ -22,6 +22,6 @@ export class AdsRepository extends Repository {
       },
       true,
     );
-    return body;
+    return data;
   }
 }

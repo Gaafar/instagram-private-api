@@ -15,15 +15,15 @@ export class PendingFriendshipsFeed extends Feed<
   }
 
   async request() {
-    const { body } = await this.client.request.send<PendingFriendshipsFeedResponse>({
+    const { data } = await this.client.request.send<PendingFriendshipsFeedResponse>({
       url: `/api/v1/friendships/pending`,
-      qs: {
+      params: {
         rank_token: this.rankToken,
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

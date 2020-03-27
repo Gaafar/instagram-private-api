@@ -10,10 +10,10 @@ export class DirectRepository extends Repository {
     recipientUsers: string[],
     threadTitle: string,
   ): Promise<DirectRepositoryCreateGroupThreadResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: '/api/v1/direct_v2/create_group_thread/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uuid: this.client.state.uuid,
         _uid: this.client.state.cookieUserId,
@@ -21,30 +21,30 @@ export class DirectRepository extends Repository {
         thread_title: threadTitle,
       }),
     });
-    return body;
+    return data;
   }
 
   public async rankedRecipients(
     mode: 'raven' | 'reshare' = 'raven',
     query = '',
   ): Promise<DirectRepositoryRankedRecipientsResponseRootObject> {
-    const { body } = await this.client.request.send<DirectRepositoryRankedRecipientsResponseRootObject>({
+    const { data } = await this.client.request.send<DirectRepositoryRankedRecipientsResponseRootObject>({
       url: '/api/v1/direct_v2/ranked_recipients/',
       method: 'GET',
-      qs: {
+      params: {
         mode,
         query,
         show_threads: true,
       },
     });
-    return body;
+    return data;
   }
 
   public async getPresence(): Promise<DirectRepositoryGetPresenceResponseRootObject> {
-    const { body } = await this.client.request.send<DirectRepositoryGetPresenceResponseRootObject>({
+    const { data } = await this.client.request.send<DirectRepositoryGetPresenceResponseRootObject>({
       url: '/api/v1/direct_v2/get_presence/',
       method: 'GET',
     });
-    return body;
+    return data;
   }
 }

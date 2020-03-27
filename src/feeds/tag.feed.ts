@@ -13,15 +13,15 @@ export class TagFeed extends Feed<TagFeedResponse, TagFeedResponseItemsItem> {
   }
 
   async request() {
-    const { body } = await this.client.request.send<TagFeedResponse>({
+    const { data } = await this.client.request.send<TagFeedResponse>({
       url: `/api/v1/feed/tag/${encodeURI(this.tag)}/`,
-      qs: {
+      params: {
         rank_token: this.rankToken,
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

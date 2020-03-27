@@ -23,15 +23,15 @@ export class MediaInlineChildCommentsFeed extends Feed<
   }
 
   public async request(): Promise<MediaInlineChildCommentsFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/media/${this.mediaId}/comments/${this.commentId}/inline_child_comments/`,
-      qs: {
+      params: {
         min_id: this.nextMinId,
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   public async items(): Promise<MediaInlineChildCommentsFeedResponseChildCommentsItem[]> {

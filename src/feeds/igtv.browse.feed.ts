@@ -14,14 +14,14 @@ export class IgtvBrowseFeed extends Feed<IgtvBrowseFeedResponseRootObject, IgtvB
   }
 
   async request(): Promise<IgtvBrowseFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/igtv/${this.isPrefetch ? 'browse_feed' : 'non_prefetch_browse_feed'}/`,
-      qs: {
+      params: {
         ...(this.isPrefetch ? { prefetch: 1 } : { max_id: this.maxId }),
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: any) {

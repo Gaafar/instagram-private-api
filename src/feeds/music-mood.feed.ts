@@ -18,10 +18,10 @@ export class MusicMoodFeed extends Feed<MusicMoodFeedResponseRootObject, MusicMo
   }
 
   async request(): Promise<MusicMoodFeedResponseRootObject> {
-    const { body } = await this.client.request.send<MusicMoodFeedResponseRootObject>({
+    const { data } = await this.client.request.send<MusicMoodFeedResponseRootObject>({
       url: `/api/v1/music/moods/${this.id}/`,
       method: 'POST',
-      form: {
+      data: {
         cursor: this.nextCursor || '0',
         _csrftoken: this.client.state.cookieCsrfToken,
         product: this.product,
@@ -29,8 +29,8 @@ export class MusicMoodFeed extends Feed<MusicMoodFeedResponseRootObject, MusicMo
         browse_session_id: this.client.state.clientSessionId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: MusicMoodFeedResponseRootObject) {

@@ -10,13 +10,12 @@ export class IgResponseError<TBody extends { [x: string]: any } = any> extends I
 
   constructor(response: IgResponse<TBody>) {
     super(
-      `${response.request.method} ${response.request.uri.path} - ${response.statusCode} ${
-        response.statusMessage
-      }; ${response.body.message || ''}`,
+      `${response.request.method} ${response.request.uri.path} - ${response.status} ${response.statusText}; ${response
+        .data.message || ''}`,
     );
     this.response = response;
-    if (response.body.message) {
-      this.text = response.body.message;
+    if (response.data.message) {
+      this.text = response.data.message;
     }
   }
 }

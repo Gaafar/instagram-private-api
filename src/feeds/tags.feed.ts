@@ -21,10 +21,10 @@ export class TagsFeed extends Feed<TagsFeedResponse, TagsFeedResponseMedia> {
   }
 
   public async request() {
-    const { body } = await this.client.request.send<TagsFeedResponse>({
+    const { data } = await this.client.request.send<TagsFeedResponse>({
       url: `/api/v1/tags/${encodeURI(this.tag)}/sections/`,
       method: 'POST',
-      form: {
+      data: {
         _csrftoken: this.client.state.cookieCsrfToken,
         tab: this.tab,
         _uuid: this.client.state.uuid,
@@ -34,8 +34,8 @@ export class TagsFeed extends Feed<TagsFeedResponse, TagsFeedResponseMedia> {
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   public async items() {

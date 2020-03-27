@@ -43,7 +43,7 @@ export class PublishService extends Repository {
     return error => {
       if (error.response.statusCode === 202) {
         PublishService.publishDebug(
-          `Received trancode error: ${JSON.stringify(error.response.body)}, waiting ${transcodeDelayInMs}ms`,
+          `Received trancode error: ${JSON.stringify(error.response.data)}, waiting ${transcodeDelayInMs}ms`,
         );
         return Bluebird.delay(transcodeDelayInMs);
       } else {

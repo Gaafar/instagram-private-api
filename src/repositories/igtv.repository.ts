@@ -6,45 +6,45 @@ import * as Chance from 'chance';
 
 export class IgtvRepository extends Repository {
   public async writeSeenState(options: IgtvWriteSeenStateOptions): Promise<StatusResponse> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: '/api/v1/igtv/write_seen_state/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         seen_state: JSON.stringify(defaults(options, { impressions: {}, grid_impressions: [] })),
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
         _uuid: this.client.state.uuid,
       }),
     });
-    return body;
+    return data;
   }
 
   public async search(query: string = ''): Promise<IgtvSearchResponseRootObject> {
-    const { body } = await this.client.request.send<IgtvSearchResponseRootObject>({
+    const { data } = await this.client.request.send<IgtvSearchResponseRootObject>({
       // this is the same method in the app
       url: `/api/v1/igtv/${query && query.length > 0 ? 'search' : 'suggested_searches'}/`,
       method: 'GET',
-      qs: {
+      params: {
         query,
       },
     });
-    return body;
+    return data;
   }
 
-  public async allUserSeries(user: string | number, data: object = {}) {
-    const { body } = await this.client.request.send({
+  public async allUserSeries(user: string | number, form: object = {}) {
+    const { data } = await this.client.request.send({
       url: `/api/v1/igtv/series/all_user_series/${user}/`,
       method: 'GET',
-      qs: this.client.request.sign(data),
+      params: this.client.request.sign(form),
     });
-    return body;
+    return data;
   }
 
   public async createSeries(title: string, description: string = '') {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/igtv/series/create/`,
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         title,
         description,
         igtv_composer_session_id: new Chance().guid({ version: 4 }),
@@ -53,19 +53,19 @@ export class IgtvRepository extends Repository {
         _uuid: this.client.state.uuid,
       }),
     });
-    return body;
+    return data;
   }
 
   public async seriesAddEpisode(series: string | number, mediaId: string) {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/igtv/series/${series}/add_episode/`,
       method: 'POST',
-      form: {
+      data: {
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
         _uuid: this.client.state.uuid,
       },
     });
-    return body;
+    return data;
   }
 }

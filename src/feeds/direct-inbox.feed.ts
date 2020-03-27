@@ -16,9 +16,9 @@ export class DirectInboxFeed extends Feed<DirectInboxFeedResponse, DirectInboxFe
   }
 
   async request() {
-    const { body } = await this.client.request.send<DirectInboxFeedResponse>({
+    const { data } = await this.client.request.send<DirectInboxFeedResponse>({
       url: `/api/v1/direct_v2/inbox/`,
-      qs: {
+      params: {
         visual_message_return_type: 'unseen',
         cursor: this.cursor,
         direction: this.cursor ? 'older' : void 0,
@@ -28,8 +28,8 @@ export class DirectInboxFeed extends Feed<DirectInboxFeedResponse, DirectInboxFe
         limit: 20,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

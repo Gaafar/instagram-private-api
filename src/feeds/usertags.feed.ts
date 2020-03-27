@@ -13,14 +13,14 @@ export class UsertagsFeed extends Feed<UsertagsFeedResponseRootObject, UsertagsF
   }
 
   async request() {
-    const { body } = await this.client.request.send<UsertagsFeedResponseRootObject>({
+    const { data } = await this.client.request.send<UsertagsFeedResponseRootObject>({
       url: `/api/v1/usertags/${this.id}/feed/`,
-      qs: {
+      params: {
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

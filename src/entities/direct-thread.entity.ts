@@ -43,6 +43,7 @@ export class DirectThreadEntity extends Entity {
    */
   public async broadcastReel(options: DirectThreadBroadcastReelOptions) {
     return await this.broadcast({
+      // TODO: is axios request, check all broadcast
       item: 'reel_share',
       form: {
         media_id: options.mediaId,
@@ -62,6 +63,7 @@ export class DirectThreadEntity extends Entity {
    */
   public async broadcastUserStory(options: DirectThreadBroadcastReelOptions) {
     return await this.broadcast({
+      // TODO: is axios request
       item: 'story_share',
       form: {
         story_media_id: options.mediaId,

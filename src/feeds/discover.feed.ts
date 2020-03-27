@@ -12,10 +12,10 @@ export class DiscoverFeed extends Feed<DiscoverFeedResponseRootObject, DiscoverF
   }
 
   async request() {
-    const { body } = await this.client.request.send<DiscoverFeedResponseRootObject>({
+    const { data } = await this.client.request.send<DiscoverFeedResponseRootObject>({
       url: `/api/v1/discover/ayml/`,
       method: 'POST',
-      form: {
+      data: {
         max_id: this.nextMaxId,
         phone_id: this.client.state.phoneId,
         module: 'discover_people',
@@ -24,8 +24,8 @@ export class DiscoverFeed extends Feed<DiscoverFeedResponseRootObject, DiscoverF
         paginate: true,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

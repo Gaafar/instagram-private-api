@@ -12,15 +12,15 @@ export class SavedFeed extends Feed<SavedFeedResponseRootObject, SavedFeedRespon
   }
 
   async request(): Promise<SavedFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: '/api/v1/feed/saved/',
       method: 'POST',
-      qs: {
+      params: {
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items(): Promise<SavedFeedResponseMedia[]> {

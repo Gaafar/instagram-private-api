@@ -12,15 +12,15 @@ export class LikedFeed extends Feed<LikedFeedResponseRootObject, LikedFeedRespon
   }
 
   async request(): Promise<LikedFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/feed/liked/`,
       method: 'GET',
-      qs: {
+      params: {
         maxId: this.maxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: LikedFeedResponseRootObject) {

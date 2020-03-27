@@ -1,4 +1,4 @@
-import { Response } from 'request';
+import { AxiosResponse } from 'axios';
 
 export type IgAppModule =
   | 'feed_timeline' //  "Timeline" tab
@@ -32,4 +32,4 @@ export type IgAppModule =
   | 'igtv_feed_timeline'
   | string;
 
-export type IgResponse<Body> = Pick<Response, Exclude<keyof Response, 'body'>> & { body: Body };
+export type IgResponse<Body> = Pick<AxiosResponse, Exclude<keyof AxiosResponse, 'data'>> & { data: Body };

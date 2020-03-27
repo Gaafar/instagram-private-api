@@ -4,7 +4,7 @@ export class ZrRepository extends Repository {
   public tokenResult() {
     return this.client.request.send({
       url: '/api/v1/zr/token/result/',
-      qs: {
+      params: {
         device_id: this.client.state.deviceId,
         token_hash: '',
         custom_device_id: this.client.state.uuid,

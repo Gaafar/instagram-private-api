@@ -13,15 +13,15 @@ export class AccountFollowingFeed extends Feed<AccountFollowingFeedResponse, Acc
   }
 
   async request() {
-    const { body } = await this.client.request.send<AccountFollowingFeedResponse>({
+    const { data } = await this.client.request.send<AccountFollowingFeedResponse>({
       url: `/api/v1/friendships/${this.id}/following/`,
-      qs: {
+      params: {
         rank_token: this.rankToken,
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

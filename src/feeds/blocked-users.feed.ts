@@ -15,14 +15,14 @@ export class BlockedUsersFeed extends Feed<
   }
 
   async request() {
-    const { body } = await this.client.request.send<BlockedUsersFeedResponseRootObject>({
+    const { data } = await this.client.request.send<BlockedUsersFeedResponseRootObject>({
       url: `/api/v1/users/blocked_list/`,
-      qs: {
+      params: {
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {

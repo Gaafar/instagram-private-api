@@ -9,10 +9,10 @@ export class LocationSearch extends Repository {
   ): Promise<LocationRepositorySearchResponseRootObject> {
     const queryOrTimestamp =
       typeof searchQuery === 'undefined' ? { timestamp: Date.now() } : { search_query: searchQuery };
-    const { body } = await this.client.request.send<LocationRepositorySearchResponseRootObject>({
+    const { data } = await this.client.request.send<LocationRepositorySearchResponseRootObject>({
       url: '/api/v1/location_search/',
       method: 'GET',
-      qs: {
+      params: {
         _uuid: this.client.state.uuid,
         _uid: this.client.state.cookieUserId,
         _csrftoken: this.client.state.cookieCsrfToken,
@@ -22,6 +22,6 @@ export class LocationSearch extends Repository {
         ...queryOrTimestamp,
       },
     });
-    return body;
+    return data;
   }
 }

@@ -53,6 +53,6 @@ async function login() {
     console.log();
   } catch (e) {
     console.error(e);
-    console.error(e.response.body);
+    console.error(e.response.data);
   }
 })();

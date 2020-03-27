@@ -10,14 +10,14 @@ export class UserStoryFeed extends Feed<UserStoryFeedResponseRootObject, UserSto
   }
 
   async request(): Promise<UserStoryFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data } = await this.client.request.send({
       url: `/api/v1/feed/user/${this.userId}/story/`,
       method: 'GET',
-      qs: {
+      params: {
         supported_capabilities_new: JSON.stringify(this.client.state.supportedCapabilities),
       },
     });
-    return body;
+    return data;
   }
 
   protected set state(response: any) {}
