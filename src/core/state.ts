@@ -1,10 +1,10 @@
-import * as _ from 'lodash';
-import * as Bluebird from 'bluebird';
-import * as Chance from 'chance';
+import _ from 'lodash';
+import Bluebird from 'bluebird';
+import Chance from 'chance';
 import { Cookie, CookieJar, MemoryCookieStore } from 'tough-cookie';
-import * as devices from '../samples/devices.json';
-import * as builds from '../samples/builds.json';
-import * as supportedCapabilities from '../samples/supported-capabilities.json';
+import devices from '../samples/devices.json';
+import builds from '../samples/builds.json';
+import supportedCapabilities from '../samples/supported-capabilities.json';
 import * as Constants from './constants';
 import { ChallengeStateResponse, CheckpointResponse } from '../responses';
 import { IgCookieNotFoundError, IgNoCheckpointError, IgUserIdNotFoundError } from '../errors';

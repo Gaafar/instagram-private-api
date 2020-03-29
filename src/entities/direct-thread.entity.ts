@@ -1,4 +1,4 @@
-import * as urlRegex from 'url-regex';
+import urlRegex from 'url-regex';
 import { Entity } from '../core/entity';
 import {
   DirectThreadBroadcastPhotoOptions,
@@ -11,7 +11,7 @@ import {
 import { DirectThreadBroadcastOptions } from '../types';
 import { IgClientError, IgResponseError } from '../errors';
 import { PublishService } from '../services/publish.service';
-import * as Bluebird from 'bluebird';
+import Bluebird from 'bluebird';
 
 export class DirectThreadEntity extends Entity {
   threadId: string = null;

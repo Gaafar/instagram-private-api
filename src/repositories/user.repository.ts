@@ -8,7 +8,7 @@ import {
 import { IgExactUserNotFoundError } from '../errors';
 import { UserLookupOptions } from '../types/user.lookup.options';
 import { defaults } from 'lodash';
-import * as Chance from 'chance';
+import Chance from 'chance';
 
 export class UserRepository extends Repository {
   async info(id: string | number): Promise<UserRepositoryInfoResponseUser> {

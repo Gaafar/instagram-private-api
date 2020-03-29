@@ -18,7 +18,7 @@ import { defaultsDeep } from 'lodash';
 import { IgSignupBlockError } from '../errors/ig-signup-block.error';
 import Bluebird = require('bluebird');
 import debug from 'debug';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 export class AccountRepository extends Repository {
   private static accountDebug = debug('ig:account');

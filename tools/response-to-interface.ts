@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { IgApiClient } from '../src';
 import { json2ts } from 'json-ts/dist';
 import { camelCase } from 'lodash';
-import * as fs from 'fs';
+import fs from 'fs';
 import { promisify } from 'util';
 
 /* async fs functions - uncomment the needed wrappers */

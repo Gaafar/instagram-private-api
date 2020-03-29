@@ -1,4 +1,4 @@
-import * as snakeCaseKeys from 'snakecase-keys';
+import snakeCaseKeys from 'snakecase-keys';
 import { classToPlain } from 'class-transformer';
 
 export abstract class InstaSticker {

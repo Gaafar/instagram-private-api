@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { classToPlain, Expose, plainToClassFromExist, serialize } from 'class-transformer';
 import { AttemptOptions, retry } from '@lifeomic/attempt';
-import * as Chance from 'chance';
+import Chance from 'chance';
 import { IgResponseError } from '../errors';
 import { Repository } from './repository';
 import { Enumerable } from '../decorators';

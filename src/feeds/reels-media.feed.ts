@@ -1,7 +1,7 @@
 import { Feed } from '../core/feed';
 import { ReelsMediaFeedResponse, ReelsMediaFeedResponseItem, ReelsMediaFeedResponseRootObject } from '../responses';
 import { IgAppModule } from '../types/common.types';
-import * as SUPPORTED_CAPABILITIES from '../samples/supported-capabilities.json';
+import SUPPORTED_CAPABILITIES from '../samples/supported-capabilities.json';
 
 export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, ReelsMediaFeedResponseItem> {
   userIds: Array<number | string>;
