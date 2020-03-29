@@ -39,7 +39,7 @@
     "@lifeomic/attempt": "^3.0.0",
     "@types/chance": "^1.0.2",
     "axios": "^0.19.2",
-    "axios-cookiejar-support": "^0.5.1",
+    "axios-cookiejar-support": "git+https://github.com/Gaafar/axios-cookiejar-support.git#713a5be",
     "bluebird": "^3.7.1",
     "chance": "^1.0.18",
     "class-transformer": "^0.2.0",

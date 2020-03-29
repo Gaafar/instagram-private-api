@@ -16,3 +16,4 @@
 - test media request
 - axios & cookie support default import types
 - replace crypto? https://github.com/brix/crypto-js
+- fix broken this.cookieJar['_jar']

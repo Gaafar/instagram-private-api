@@ -207,6 +207,7 @@ export class Request {
     try {
       return await retry(async () => axios(options), this.attemptOptions);
     } catch (err) {
+      console.log(err);
       throw new IgNetworkError(err);
     }
   }
