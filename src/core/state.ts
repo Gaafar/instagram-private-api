@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
 import * as Chance from 'chance';
-import { jar } from 'request';
 import { Cookie, CookieJar, MemoryCookieStore } from 'tough-cookie';
 import * as devices from '../samples/devices.json';
 import * as builds from '../samples/builds.json';
@@ -93,7 +92,7 @@ export class State {
   @Enumerable(false)
   cookieStore = new MemoryCookieStore();
   @Enumerable(false)
-  cookieJar = jar(this.cookieStore);
+  cookieJar = new CookieJar(this.cookieStore);
   @Enumerable(false)
   checkpoint: CheckpointResponse | null = null;
   @Enumerable(false)
@@ -178,7 +177,7 @@ export class State {
   }
 
   public extractCookie(key: string): Cookie | null {
-    const cookies = this.cookieJar.getCookies(this.constants.HOST);
+    const cookies = this.cookieJar.getCookiesSync(this.constants.HOST);
     return _.find(cookies, { key }) || null;
   }
 
@@ -226,7 +225,7 @@ export class State {
     const obj = typeof state === 'string' ? JSON.parse(state) : state;
     if (typeof obj !== 'object') {
       State.stateDebug(`State deserialization failed, obj is of type ${typeof obj} (object expected)`);
-      throw new TypeError('State isn\'t an object or serialized JSON');
+      throw new TypeError("State isn't an object or serialized JSON");
     }
     State.stateDebug(`Deserializing ${Object.keys(obj).join(', ')}`);
     if (obj.constants) {

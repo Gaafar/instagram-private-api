@@ -1,9 +1,11 @@
-import { defaultsDeep, inRange, random } from 'lodash';
+import { defaultsDeep, random, mapValues, omit } from 'lodash';
 import { createHmac } from 'crypto';
 import { Subject } from 'rxjs';
 import { AttemptOptions, retry } from '@lifeomic/attempt';
-import * as request from 'request-promise';
-import { Options, Response } from 'request';
+import axios from 'axios';
+import { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+import axiosCookieJarSupport from 'axios-cookiejar-support';
+import Qs from 'qs';
 import { IgApiClient } from './client';
 import {
   IgActionSpamError,
@@ -21,11 +23,22 @@ import {
 import { IgResponse } from '../types';
 import JSONbigInt = require('json-bigint');
 
+axiosCookieJarSupport(axios);
+
 const JSONbigString = JSONbigInt({ storeAsString: true });
 
 import debug from 'debug';
 
 type Payload = { [key: string]: any } | string;
+type Primitive = string | number | boolean;
+type RequestOptions = Partial<{
+  url: string;
+  method: Method;
+  form: SignedPost | { [key: string]: any };
+  qs: SignedPost | { [key: string]: any };
+  headers: { [key: string]: Primitive };
+  body: Buffer | string;
+}>;
 
 interface SignedPost {
   signed_body: string;
@@ -39,47 +52,66 @@ export class Request {
   attemptOptions: Partial<AttemptOptions<any>> = {
     maxAttempts: 1,
   };
-  defaults: Partial<Options> = {};
+  defaults: Partial<AxiosRequestConfig> = {};
 
   constructor(private client: IgApiClient) {}
 
-  private static requestTransform(body, response: Response, resolveWithFullResponse) {
+  private static transformResponse(data: any, headers: AxiosResponse) {
     try {
       // Sometimes we have numbers greater than Number.MAX_SAFE_INTEGER in json response
       // To handle it we just wrap numbers with length > 15 it double quotes to get strings instead
-      response.body = JSONbigString.parse(body);
+      const parsedData = JSONbigString.parse(data);
+      return parsedData;
     } catch (e) {
-      if (inRange(response.statusCode, 200, 299)) {
-        throw e;
-      }
+      // TODO: throw if stringify fails for a successful request, verify transformer is not called on error?
+      // if (inRange(response.status, 200, 299)) {
+      //   throw e;
+      // }
     }
-    return resolveWithFullResponse ? response : response.body;
+    return data;
   }
 
-  public async send<T = any>(userOptions: Options, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
-    const options = defaultsDeep(
-      userOptions,
-      {
-        baseUrl: 'https://i.instagram.com/',
-        resolveWithFullResponse: true,
-        proxy: this.client.state.proxyUrl,
-        simple: false,
-        transform: Request.requestTransform,
-        jar: this.client.state.cookieJar,
-        strictSSL: false,
-        gzip: true,
-        headers: this.getDefaultHeaders(),
-      },
-      this.defaults,
-    );
-    Request.requestDebug(`Requesting ${options.method} ${options.url || options.uri || '[could not find url]'}`);
+  // to avoid a huge change, this functions accepts a subset of 'request' options, maps it to axios
+  // then maps axios response back to 'request' response
+  public async send<T = any>(userOptions: RequestOptions, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
+    const requestDefaults: AxiosRequestConfig = {
+      // TODO: map commented options
+      baseURL: 'https://i.instagram.com/',
+      // proxy: this.client.state.proxyUrl,
+      // simple: false,
+      transformResponse: Request.transformResponse,
+      jar: this.client.state.cookieJar,
+      withCredentials: true,
+      // strictSSL: false,
+      // gzip: true,
+      headers: this.getDefaultHeaders(),
+      paramsSerializer: Qs.stringify,
+    };
+
+    const formUrlEncoded = (formObject: { [key: string]: any }) =>
+      Object.keys(formObject).reduce((encoded, key) => encoded + `&${key}=${encodeURIComponent(formObject[key])}`, '');
+
+    const mappedUserOptions: AxiosRequestConfig = {
+      url: userOptions.url,
+      method: userOptions.method || 'GET',
+      headers: userOptions.headers,
+      params: userOptions.qs,
+      data: userOptions.form ? formUrlEncoded(userOptions.form) : userOptions.body,
+    };
+
+    const options: AxiosRequestConfig = defaultsDeep(mappedUserOptions, requestDefaults, this.defaults);
+    options.headers = mapValues(options.headers, value => (value === undefined ? '' : value));
+    Request.requestDebug(`Requesting ${options.method} ${options.url || '[could not find url]'}`);
+
     const response = await this.faultTolerantRequest(options);
-    this.updateState(response);
+    const mappedResponse = { ...omit(response, 'data'), body: response.data };
+
+    this.updateState(mappedResponse);
     process.nextTick(() => this.end$.next());
-    if (response.body.status === 'ok' || (onlyCheckHttpStatus && response.statusCode === 200)) {
-      return response;
+    if (mappedResponse.body.status === 'ok' || (onlyCheckHttpStatus && mappedResponse.status === 200)) {
+      return mappedResponse;
     }
-    const error = this.handleResponseError(response);
+    const error = this.handleResponseError(mappedResponse);
     process.nextTick(() => this.error$.next(error));
     throw error;
   }
@@ -133,9 +165,9 @@ export class Request {
     return `${signature}\n${body}\n`;
   }
 
-  private handleResponseError(response: Response): IgClientError {
+  private handleResponseError(response: IgResponse<any>): IgClientError {
     Request.requestDebug(
-      `Request ${response.request.method} ${response.request.uri} failed: ${
+      `Request ${response.config.method} ${response.config.url} failed: ${
         typeof response.body === 'object' ? JSON.stringify(response.body) : response.body
       }`,
     );
@@ -144,7 +176,7 @@ export class Request {
     if (json.spam) {
       return new IgActionSpamError(response);
     }
-    if (response.statusCode === 404) {
+    if (response.status === 404) {
       return new IgNotFoundError(response);
     }
     if (typeof json.message === 'string') {
@@ -171,9 +203,9 @@ export class Request {
     return new IgResponseError(response);
   }
 
-  protected async faultTolerantRequest(options: Options) {
+  protected async faultTolerantRequest(options: AxiosRequestConfig): Promise<AxiosResponse> {
     try {
-      return await retry(async () => request(options), this.attemptOptions);
+      return await retry(async () => axios(options), this.attemptOptions);
     } catch (err) {
       throw new IgNetworkError(err);
     }

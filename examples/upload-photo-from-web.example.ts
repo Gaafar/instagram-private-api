@@ -1,7 +1,7 @@
 /* tslint:disable:no-console */
 import 'dotenv/config';
 import { IgApiClient } from '../src';
-import { get } from 'request-promise'; // request is already declared as a dependency of the library
+import axios from 'axios';
 
 (async () => {
   const ig = new IgApiClient();
@@ -11,9 +11,10 @@ import { get } from 'request-promise'; // request is already declared as a depen
   console.log(JSON.stringify(auth));
 
   // getting random square image from internet as a Buffer
-  const imageBuffer = await get({
+  const { data: imageBuffer } = await axios({
     url: 'https://picsum.photos/800/800', // random picture with 800x800 size
-    encoding: null, // this is required, only this way a Buffer is returned
+    // TODO: test encoding with axios
+    // encoding: null, // this is required, only this way a Buffer is returned
   });
 
   const publishResult = await ig.publish.photo({

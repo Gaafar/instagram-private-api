@@ -37,7 +37,7 @@ export abstract class Feed<Response = any, Item = any> extends Repository {
                   // If instagram just tells us to wait - we are waiting.
                   if (
                     error instanceof IgResponseError &&
-                    [400, 429, 500, 502].includes(error.response.statusCode) &&
+                    [400, 429, 500, 502].includes(error.response.status) &&
                     subscribed
                   ) {
                     return;
