@@ -207,7 +207,11 @@ export class Request {
     try {
       return await retry(async () => axios(options), this.attemptOptions);
     } catch (err) {
-      console.log(err);
+      // don't throw on non network errors (having response) to mimic request-promise with { simple: false }
+      if (err?.response?.data) {
+        return err.response;
+      }
+
       throw new IgNetworkError(err);
     }
   }
